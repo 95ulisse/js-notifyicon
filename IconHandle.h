@@ -4,16 +4,16 @@
 
 namespace JsNotifyIcon {
 
-	class IconHandle {
-		
-		public:
-			IconHandle(HICON handle);
-			~IconHandle();
-			HICON Handle();
+    class IconHandle {
+        
+        public:
+            IconHandle(HICON handle);
+            ~IconHandle();
+            HICON Handle();
 
-		private:
-			HICON _handle;
+        private:
+            HICON _handle;
 
-	};
+    };
 
 }

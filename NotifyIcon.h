@@ -12,9 +12,9 @@
 namespace JsNotifyIcon {
 
     enum class NotifyIconMessage : int {
-    	MouseMove = 0,
-    	Click = 1,
-    	RClick = 2
+        MouseMove = 0,
+        Click = 1,
+        RClick = 2
     };
 
     class NotifyIcon; // This is just to make the compiler happy
@@ -25,14 +25,14 @@ namespace JsNotifyIcon {
 
         public:
             NotifyIcon(int id);
-    		NotifyIcon(const NotifyIcon& other);
+            NotifyIcon(const NotifyIcon& other);
             ~NotifyIcon();
 
-    		int ID;
+            int ID;
 
             void SetIcon(IconHandle* icon);
             void SetTooltip(const char* text);
-    		void SetCallback(NotifyIconCallback cb);
+            void SetCallback(NotifyIconCallback cb);
             void Show();
             void Hide();
             bool IsVisible();
@@ -44,10 +44,10 @@ namespace JsNotifyIcon {
 
         private:
             HWND _windowHandle;
-			std::shared_ptr<IconHandle> _icon;
+            std::shared_ptr<IconHandle> _icon;
             std::shared_ptr<NOTIFYICONDATA> _iconData;
             bool _isVisible;
-    		NotifyIconCallback _callback;
+            NotifyIconCallback _callback;
 
             void UpdateIcon();
             static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

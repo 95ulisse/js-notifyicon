@@ -18,43 +18,43 @@ namespace JsNotifyIcon {
 
     class ThreadBridge
     {
-    	public:
+        public:
 
-    		static void Initialize();
-    		static void Dispose();
+            static void Initialize();
+            static void Dispose();
 
-    		static void SetCallback(ThreadBridgeCallback func);
-    		static int CreateNotifyIcon();
-    		static void SetIcon(int id, IconHandle* icon);
-    		static void SetTooltip(int id, const char* text);
-    		static void Show(int id);
+            static void SetCallback(ThreadBridgeCallback func);
+            static int CreateNotifyIcon();
+            static void SetIcon(int id, IconHandle* icon);
+            static void SetTooltip(int id, const char* text);
+            static void Show(int id);
             static void Hide(int id);
             static void ShowMessage(int id, const char* title, const char* text, int icon);
-			static void Dispose(int id);
+            static void Dispose(int id);
 
-    	private:
+        private:
 
-    		struct _ShowMessageParam {
-    			const char* title;
-    			const char* text;
-    			int icon;
-    		};
+            struct _ShowMessageParam {
+                const char* title;
+                const char* text;
+                int icon;
+            };
 
-    		struct _CallbackQueueItem {
-    			int ID;
-    			NotifyIconMessage message;
-    		};
+            struct _CallbackQueueItem {
+                int ID;
+                NotifyIconMessage message;
+            };
 
-    		static int _idCounter;
-    		static uv_thread_t _thread;
-    		static int _threadId;
-    		static uv_async_t _async;
-    		static uv_rwlock_t _queueLock;
-    		static std::queue<_CallbackQueueItem*>* _callbackQueue;
-    		static ThreadBridgeCallback _callback;
-    		static void ThreadProcedure(void* arg);
-    		static void OnThreadMessage(uv_async_t* handle, int status);
-    		static void OnNotifyIconMessage(NotifyIcon* icon, NotifyIconMessage msg);
+            static int _idCounter;
+            static uv_thread_t _thread;
+            static int _threadId;
+            static uv_async_t _async;
+            static uv_rwlock_t _queueLock;
+            static std::queue<_CallbackQueueItem*>* _callbackQueue;
+            static ThreadBridgeCallback _callback;
+            static void ThreadProcedure(void* arg);
+            static void OnThreadMessage(uv_async_t* handle, int status);
+            static void OnNotifyIconMessage(NotifyIcon* icon, NotifyIconMessage msg);
     };
 
 }

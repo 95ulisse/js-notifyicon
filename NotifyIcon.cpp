@@ -28,9 +28,9 @@ namespace JsNotifyIcon {
 
     // Constructor
     NotifyIcon::NotifyIcon(int id) :
-    	ID(id),
+        ID(id),
         _isVisible(false),
-    	_callback(NULL)
+        _callback(NULL)
     {
         // Creates the window
         HWND hWnd = CreateWindowEx(0, NOTIFYICON_WINDOW_CLASSNAME, "NotifyIconwindow", 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
@@ -69,7 +69,7 @@ namespace JsNotifyIcon {
         if (this->_isVisible)
             return;
 
-    	Shell_NotifyIcon(NIM_ADD, this->_iconData.get());
+        Shell_NotifyIcon(NIM_ADD, this->_iconData.get());
         this->_isVisible = true;
     }
 
@@ -94,16 +94,16 @@ namespace JsNotifyIcon {
     // Sets the icon
     void NotifyIcon::SetIcon(IconHandle* icon)
     {
-		this->_icon = std::shared_ptr<IconHandle>(icon);
+        this->_icon = std::shared_ptr<IconHandle>(icon);
         this->_iconData->uFlags |= NIF_ICON;
-		this->_iconData->hIcon = icon->Handle();
+        this->_iconData->hIcon = icon->Handle();
         this->UpdateIcon();
     }
 
     // Sets the callback
     void NotifyIcon::SetCallback(NotifyIconCallback cb)
     {
-    	this->_callback = cb;
+        this->_callback = cb;
     }
 
     // Shows a balloon mesage
@@ -131,22 +131,22 @@ namespace JsNotifyIcon {
     {
         NotifyIcon* icon = (NotifyIcon*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
-    	// Exits prematurely if this message has not originated from notify icon
-    	// or if no callback is registered on the NotifyIcon object
-    	if (message != WM_NOTIFYICON || !icon->_callback)
-    		return DefWindowProc(hwnd, message, wParam, lParam);
+        // Exits prematurely if this message has not originated from notify icon
+        // or if no callback is registered on the NotifyIcon object
+        if (message != WM_NOTIFYICON || !icon->_callback)
+            return DefWindowProc(hwnd, message, wParam, lParam);
 
         switch (lParam)
         {
-    		case WM_MOUSEMOVE:
-    			icon->_callback(icon, NotifyIconMessage::MouseMove);
-    			break;
-    		case WM_LBUTTONUP:
-    			icon->_callback(icon, NotifyIconMessage::Click);
-    			break;
-    		case WM_RBUTTONUP:
+            case WM_MOUSEMOVE:
+                icon->_callback(icon, NotifyIconMessage::MouseMove);
+                break;
+            case WM_LBUTTONUP:
+                icon->_callback(icon, NotifyIconMessage::Click);
+                break;
+            case WM_RBUTTONUP:
                 icon->_callback(icon, NotifyIconMessage::RClick);
-    			break;
+                break;
         }
 
         return DefWindowProc(hwnd, message, wParam, lParam);
