@@ -2,7 +2,13 @@
   "targets": [
     {
       "target_name": "NotifyIcon",
-      "sources": [ "NotifyIcon.cpp", "ThreadBridge.cpp", "node.cpp" ]
+      "sources": [
+        "IconHandle.cpp",
+        "NotifyIcon.cpp",
+        "ThreadBridge.cpp",
+        "node.IconHandle.cpp",
+        "node.cpp"
+      ]
     }
   ]
 }

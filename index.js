@@ -28,6 +28,9 @@ util.inherits(NotifyIcon, EventEmitter);
 NotifyIcon.prototype.setTooltip = function (text) {
     native.setTooltip(this._id, text);
 };
+NotifyIcon.prototype.setIcon = function(icon) {
+    native.setIcon(this._id, icon);
+};
 NotifyIcon.prototype.show = function () {
     native.show(this._id);
 };
@@ -48,11 +51,17 @@ NotifyIcon.prototype.showMessage = function (title, text, icon) {
     })[ icon || "none" ];
     native.showMessage(this._id, title, text, icon || 0);
 };
+NotifyIcon.prototype.dispose = function () {
+    native.dispose(this._id);
+};
 
 // Redirects the events fired from the native extension to the correct JS instance
 native.setCallback(function (id, msg) {
     globalCache[id].emit(msg);
 });
+
+// Exports on the NotifyIcon constructor the `loadIcon` function
+NotifyIcon.loadIcon = native.loadIcon;
 
 // Registers some cleanup code on process exit
 function exitHandler(options, err) {

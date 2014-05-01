@@ -3,49 +3,55 @@
 #include <memory>
 #include <Windows.h>
 #include <shellapi.h>
+#include "IconHandle.h"
 
 // Constants
 #define NOTIFYICON_WINDOW_CLASSNAME "NotifyIcon"
 #define WM_NOTIFYICON              (WM_USER + 1)
 
-enum class NotifyIconMessage : int {
-	MouseMove = 0,
-	Click = 1,
-	RClick = 2
-};
+namespace JsNotifyIcon {
 
-class NotifyIcon; // This is just to make the compiler happy
-typedef void (*NotifyIconCallback)(NotifyIcon*, NotifyIconMessage);
+    enum class NotifyIconMessage : int {
+    	MouseMove = 0,
+    	Click = 1,
+    	RClick = 2
+    };
 
-// NotifyIcon class
-class NotifyIcon {
+    class NotifyIcon; // This is just to make the compiler happy
+    typedef void (*NotifyIconCallback)(NotifyIcon*, NotifyIconMessage);
 
-    public:
-        NotifyIcon(int id);
-		NotifyIcon(const NotifyIcon& other);
-        ~NotifyIcon();
+    // NotifyIcon class
+    class NotifyIcon {
 
-		int ID;
+        public:
+            NotifyIcon(int id);
+    		NotifyIcon(const NotifyIcon& other);
+            ~NotifyIcon();
 
-        void SetIcon(HICON icon);
-        void SetTooltip(const char* text);
-		void SetCallback(NotifyIconCallback cb);
-        void Show();
-        void Hide();
-        bool IsVisible();
-        void ShowMessage(const char* title, const char* text, int icon);
+    		int ID;
 
-        static void Initialize();
-        static void Dispose();
+            void SetIcon(IconHandle* icon);
+            void SetTooltip(const char* text);
+    		void SetCallback(NotifyIconCallback cb);
+            void Show();
+            void Hide();
+            bool IsVisible();
+            void ShowMessage(const char* title, const char* text, int icon);
+
+            static void Initialize();
+            static void Dispose();
 
 
-    private:
-        HWND _windowHandle;
-        std::shared_ptr<NOTIFYICONDATA> _iconData;
-        bool _isVisible;
-		NotifyIconCallback _callback;
+        private:
+            HWND _windowHandle;
+			std::shared_ptr<IconHandle> _icon;
+            std::shared_ptr<NOTIFYICONDATA> _iconData;
+            bool _isVisible;
+    		NotifyIconCallback _callback;
 
-        void UpdateIcon();
-        static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+            void UpdateIcon();
+            static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-};
+    };
+
+}
