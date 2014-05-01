@@ -1,0 +1,12 @@
+{
+  "name": "js-notifyicon",
+  "version": "0.1.0",
+  "description": "Create and manage icons in the notification tray",
+  "main": "index.js",
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "author": "Marco Cameriero",
+  "license": "MIT",
+  "gypfile": true
+}

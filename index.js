@@ -1,6 +1,6 @@
 "use strict";
 
-var native = require('./build/debug/NotifyIcon'),
+var native = require('./build/Release/NotifyIcon'),
     util = require('util'),
     EventEmitter = require('events').EventEmitter,
     globalCache = {};
