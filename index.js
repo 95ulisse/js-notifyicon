@@ -6,13 +6,14 @@ var native = require('./build/Release/NotifyIcon'),
     globalCache = {};
 
 // NotifyIcon constructor
-function NotifyIcon()
+function NotifyIcon(opts)
 {
     if (!(this instanceof NotifyIcon))
         return new NotifyIcon();
 
     EventEmitter.call(this);
 
+    // Stores the native ID
     var id = native.createNotifyIcon();
     globalCache[id] = this;
     Object.defineProperty(this, "_id", {
@@ -21,6 +22,12 @@ function NotifyIcon()
         enumerable: false,
         writable: false
     });
+
+    // Shortcuts
+    if (opts) {
+        opts.tooltip && this.setTooltip(opts.tooltip);
+        opts.icon && this.setIcon(opts.icon);
+    }
 }
 util.inherits(NotifyIcon, EventEmitter);
 
@@ -29,6 +36,8 @@ NotifyIcon.prototype.setTooltip = function (text) {
     native.setTooltip(this._id, text);
 };
 NotifyIcon.prototype.setIcon = function(icon) {
+    if (!(icon instanceof native.IconHandle))
+        throw new Error("Expected IconHandle. Please, load an icon using 'loadIcon'.");
     native.setIcon(this._id, icon);
 };
 NotifyIcon.prototype.show = function () {
