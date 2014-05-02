@@ -14,7 +14,9 @@ namespace JsNotifyIcon {
     enum class NotifyIconMessage : int {
         MouseMove = 0,
         Click = 1,
-        RClick = 2
+        RClick = 2,
+        DoubleClick = 3,
+        DoubleRClick = 4
     };
 
     class NotifyIcon; // This is just to make the compiler happy

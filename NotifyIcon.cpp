@@ -147,6 +147,12 @@ namespace JsNotifyIcon {
             case WM_RBUTTONUP:
                 icon->_callback(icon, NotifyIconMessage::RClick);
                 break;
+			case WM_LBUTTONDBLCLK:
+				icon->_callback(icon, NotifyIconMessage::DoubleClick);
+				break;
+			case WM_RBUTTONDBLCLK:
+				icon->_callback(icon, NotifyIconMessage::DoubleRClick);
+				break;
         }
 
         return DefWindowProc(hwnd, message, wParam, lParam);

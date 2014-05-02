@@ -58,6 +58,12 @@ namespace Node {
             case NotifyIconMessage::RClick:
                 args[1] = Local<Value>::New(String::New("rclick"));
                 break;
+            case NotifyIconMessage::DoubleClick:
+                args[1] = Local<Value>::New(String::New("dblclick"));
+                break;
+            case NotifyIconMessage::DoubleRClick:
+                args[1] = Local<Value>::New(String::New("dblrclick"));
+                break;
         }
 
         _callback->Call(Context::GetCurrent()->Global(), 2, args);
