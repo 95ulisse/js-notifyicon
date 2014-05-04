@@ -88,6 +88,9 @@ namespace Node {
                 String::Utf8Value text_v8(obj->Get(String::New("text"))->ToString());
                 item->Text = strdup(*text_v8);
             }
+            if (obj->HasOwnProperty(String::New("separator"))) {
+                item->Separator = obj->Get(String::New("separator"))->BooleanValue();
+            }
             if (obj->HasOwnProperty(String::New("children"))) {
                 Handle<Value> submenuObj = obj->Get(String::New("children"));
                 if (submenuObj->IsArray()) {

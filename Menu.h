@@ -30,6 +30,7 @@ namespace JsNotifyIcon {
     // Item of a menu
     struct MenuItem {
         unsigned int ID;
+        bool Separator;
         char* Command;
         char* Text;
         Menu* ChildMenu;

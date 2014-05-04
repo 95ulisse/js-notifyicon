@@ -51,6 +51,8 @@ namespace JsNotifyIcon {
             if (it->ChildMenu) {
                 it->ChildMenu->UpdateMenu();
                 AppendMenu(_hmenu, MF_STRING | MF_POPUP, (UINT_PTR)it->ChildMenu->_hmenu, it->Text);
+            } else if(it->Separator) {
+                AppendMenu(_hmenu, MF_SEPARATOR, NULL, NULL);
             } else {
                 AppendMenu(_hmenu, MF_STRING, it->ID, it->Text);
             } 
