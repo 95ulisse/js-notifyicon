@@ -62,7 +62,13 @@ NotifyIcon.prototype.showMessage = function (title, text, icon) {
         "warning-big": 34,
         "error-big": 35
     })[ icon || "none" ];
-    native.showMessage(this._id, title, text, icon || 0);
+
+    // The icon must be visible to show a message
+    this.show();
+    var id = this._id;
+    setTimeout(function () {
+        native.showMessage(id, title, text, icon || 0);
+    }, 0);
 };
 NotifyIcon.prototype.dispose = function () {
     native.dispose(this._id);
