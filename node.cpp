@@ -1,5 +1,6 @@
 #include <node.h>
 #include <v8.h>
+#include <string>
 #include "ThreadBridge.h"
 #include "node.IconHandle.h"
 
@@ -27,20 +28,11 @@ namespace Node {
             THROW_V8_EXCEPTION("Integer argument expected"); \
         int name = args[index]->Int32Value();
 
+    // ------------------------------------------------------------------------
+
     Persistent<Function> _callback;
 
-    Handle<Value> SetCallback(const Arguments& args) {
-        HandleScope scope;
-
-        if (args.Length() != 1 || !args[0]->IsFunction())
-            THROW_V8_EXCEPTION("Expected just one function as parameter");
-
-        _callback = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
-
-        return scope.Close(Undefined());
-    }
-
-    void OnThreadBridgeMessage(int ID, NotifyIconMessage msg) {
+    void OnThreadBridgeMessage(int ID, NotifyIconMessage msg, void* param) {
         HandleScope scope;
 
         Local<Value> args[2] = {
@@ -64,10 +56,67 @@ namespace Node {
             case NotifyIconMessage::DoubleRClick:
                 args[1] = Local<Value>::New(String::New("dblrclick"));
                 break;
+            case NotifyIconMessage::Command:
+                args[1] = Local<Value>::New(String::New((std::string("command:") + (char*)param).c_str()));
+                break;
         }
 
         _callback->Call(Context::GetCurrent()->Global(), 2, args);
 
+    }
+
+    int _menuItemId = 1;
+    Menu* RecursiveBuildMenu(Handle<Array> arr) {
+        Menu* menu = new Menu();
+        for (unsigned int i = 0; i < arr->Length(); i++) {
+
+            // Checks and casts to object
+            if (!arr->Get(i)->IsObject()) {
+                ThrowException(Exception::Error(String::New("Expected array of objects")));
+                return NULL;
+            }
+            Handle<Object> obj = arr->Get(i)->ToObject();
+
+            // Fills the properties of the MenuItem
+            MenuItem* item = new MenuItem();
+            item->ID = _menuItemId++;
+            if (obj->HasOwnProperty(String::New("command"))) {
+                String::Utf8Value command_v8(obj->Get(String::New("command"))->ToString());
+                item->Command = strdup(*command_v8);
+            }
+            if (obj->HasOwnProperty(String::New("text"))) {
+                String::Utf8Value text_v8(obj->Get(String::New("text"))->ToString());
+                item->Text = strdup(*text_v8);
+            }
+            if (obj->HasOwnProperty(String::New("children"))) {
+                Handle<Value> submenuObj = obj->Get(String::New("children"));
+                if (submenuObj->IsArray()) {
+                    Menu* submenu = RecursiveBuildMenu(Handle<Array>::Cast(submenuObj));
+                    if (submenu)
+                        item->ChildMenu = submenu;
+                    else
+                        return NULL;
+                } else {
+                    ThrowException(Exception::Error(String::New("Children property must be an array")));
+                    return NULL;
+                }
+            }
+            menu->Children.push_back(*item);
+        }
+        return menu;
+    }
+
+    // -------------------------------------------------------------------------
+
+    Handle<Value> SetCallback(const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length() != 1 || !args[0]->IsFunction())
+            THROW_V8_EXCEPTION("Expected just one function as parameter");
+
+        _callback = Persistent<Function>::New(Handle<Function>::Cast(args[0]));
+
+        return scope.Close(Undefined());
     }
 
     Handle<Value> CreateNotifyIcon(const Arguments& args) {
@@ -96,6 +145,19 @@ namespace Node {
         FIRST_ARG_ID();
         STRING_ARG(1, text);
         ThreadBridge::SetTooltip(id, text);
+        return scope.Close(Undefined());
+    }
+
+    Handle<Value> SetMenu(const Arguments& args) {
+        HandleScope scope;
+        FIRST_ARG_ID();
+        
+        if (args.Length() != 2 || !args[1]->IsArray())
+            THROW_V8_EXCEPTION("Expected menu array as second argument");
+        Menu* menu = RecursiveBuildMenu(Handle<Array>::Cast(args[1]));
+        if (menu)
+            ThreadBridge::SetMenu(id, menu);
+
         return scope.Close(Undefined());
     }
 
@@ -181,6 +243,8 @@ namespace Node {
             FunctionTemplate::New(SetIcon)->GetFunction());
         exports->Set(String::NewSymbol("setTooltip"),
             FunctionTemplate::New(SetTooltip)->GetFunction());
+        exports->Set(String::NewSymbol("setMenu"),
+            FunctionTemplate::New(SetMenu)->GetFunction());
         exports->Set(String::NewSymbol("show"),
             FunctionTemplate::New(Show)->GetFunction());
         exports->Set(String::NewSymbol("hide"),

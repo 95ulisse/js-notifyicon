@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <shellapi.h>
 #include "IconHandle.h"
+#include "Menu.h"
 
 // Constants
 #define NOTIFYICON_WINDOW_CLASSNAME "NotifyIcon"
@@ -16,11 +17,12 @@ namespace JsNotifyIcon {
         Click = 1,
         RClick = 2,
         DoubleClick = 3,
-        DoubleRClick = 4
+        DoubleRClick = 4,
+        Command = 5
     };
 
     class NotifyIcon; // This is just to make the compiler happy
-    typedef void (*NotifyIconCallback)(NotifyIcon*, NotifyIconMessage);
+    typedef void (*NotifyIconCallback)(NotifyIcon*, NotifyIconMessage, void* param);
 
     // NotifyIcon class
     class NotifyIcon {
@@ -34,6 +36,7 @@ namespace JsNotifyIcon {
 
             void SetIcon(IconHandle* icon);
             void SetTooltip(const char* text);
+            void SetMenu(Menu* menu);
             void SetCallback(NotifyIconCallback cb);
             void Show();
             void Hide();
@@ -46,6 +49,7 @@ namespace JsNotifyIcon {
 
         private:
             HWND _windowHandle;
+            std::shared_ptr<Menu> _menu;
             std::shared_ptr<IconHandle> _icon;
             std::shared_ptr<NOTIFYICONDATA> _iconData;
             bool _isVisible;

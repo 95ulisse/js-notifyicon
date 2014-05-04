@@ -68,6 +68,11 @@ namespace JsNotifyIcon {
         PostThreadMessage((DWORD)ThreadBridge::_threadId, TB_MESSAGE_SETTOOLTIP, id, (LPARAM)textCopy);
     }
 
+    void ThreadBridge::SetMenu(int id, Menu* menu)
+    {
+        PostThreadMessage((DWORD)ThreadBridge::_threadId, TB_MESSAGE_SETMENU, id, (LPARAM)menu);
+    }
+
     void ThreadBridge::Show(int id)
     {
         PostThreadMessage((DWORD)ThreadBridge::_threadId, TB_MESSAGE_SHOW, id, 0);
@@ -127,6 +132,10 @@ namespace JsNotifyIcon {
                     free((char*)msg.lParam);
                     continue;
         
+                case TB_MESSAGE_SETMENU:
+                    iconMap[(int)msg.wParam]->SetMenu((Menu*)msg.lParam);
+                    continue;
+        
                 case TB_MESSAGE_SHOW:
                     iconMap[(int)msg.wParam]->Show();
                     continue;
@@ -155,12 +164,13 @@ namespace JsNotifyIcon {
         // `iconMap` and all the icons will be destroyed at the end of the method
     }
 
-    void ThreadBridge::OnNotifyIconMessage(NotifyIcon* icon, NotifyIconMessage msg)
+    void ThreadBridge::OnNotifyIconMessage(NotifyIcon* icon, NotifyIconMessage msg, void* param)
     {
         // Creates the message to pass to the v8 thread
         _CallbackQueueItem* item = (_CallbackQueueItem*)malloc(sizeof(_CallbackQueueItem));
         item->ID = icon->ID;
         item->message = msg;
+        item->param = param;
 
         // Stores the item in the queue and wakes up the main thread
         uv_rwlock_wrlock(&ThreadBridge::_queueLock);
@@ -176,7 +186,7 @@ namespace JsNotifyIcon {
             while(!ThreadBridge::_callbackQueue->empty()) {
                 _CallbackQueueItem* item = ThreadBridge::_callbackQueue->front();
                 ThreadBridge::_callbackQueue->pop();
-                ThreadBridge::_callback(item->ID, item->message);
+                ThreadBridge::_callback(item->ID, item->message, item->param);
                 free(item);
             }
         uv_rwlock_rdunlock(&ThreadBridge::_queueLock);

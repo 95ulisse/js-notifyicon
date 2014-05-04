@@ -27,6 +27,7 @@ function NotifyIcon(opts)
     if (opts) {
         opts.tooltip && this.setTooltip(opts.tooltip);
         opts.icon && this.setIcon(opts.icon);
+        opts.menu && this.setMenu(opts.menu);
     }
 }
 util.inherits(NotifyIcon, EventEmitter);
@@ -39,6 +40,9 @@ NotifyIcon.prototype.setIcon = function(icon) {
     if (!(icon instanceof native.IconHandle))
         throw new Error("Expected IconHandle. Please, load an icon using 'loadIcon'.");
     native.setIcon(this._id, icon);
+};
+NotifyIcon.prototype.setMenu = function (menu) {
+    native.setMenu(this._id, menu);
 };
 NotifyIcon.prototype.show = function () {
     native.show(this._id);

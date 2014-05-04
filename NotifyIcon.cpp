@@ -30,7 +30,8 @@ namespace JsNotifyIcon {
     NotifyIcon::NotifyIcon(int id) :
         ID(id),
         _isVisible(false),
-        _callback(NULL)
+        _callback(NULL),
+        _menu(NULL)
     {
         // Creates the window
         HWND hWnd = CreateWindowEx(0, NOTIFYICON_WINDOW_CLASSNAME, "NotifyIconwindow", 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
@@ -100,6 +101,12 @@ namespace JsNotifyIcon {
         this->UpdateIcon();
     }
 
+    // Sets the menu
+    void NotifyIcon::SetMenu(Menu* menu)
+    {
+        this->_menu = std::shared_ptr<Menu>(menu);
+    }
+
     // Sets the callback
     void NotifyIcon::SetCallback(NotifyIconCallback cb)
     {
@@ -139,19 +146,29 @@ namespace JsNotifyIcon {
         switch (lParam)
         {
             case WM_MOUSEMOVE:
-                icon->_callback(icon, NotifyIconMessage::MouseMove);
+                icon->_callback(icon, NotifyIconMessage::MouseMove, NULL);
                 break;
             case WM_LBUTTONUP:
-                icon->_callback(icon, NotifyIconMessage::Click);
+                icon->_callback(icon, NotifyIconMessage::Click, NULL);
                 break;
             case WM_RBUTTONUP:
-                icon->_callback(icon, NotifyIconMessage::RClick);
+                icon->_callback(icon, NotifyIconMessage::RClick, NULL);
+
+                // Shows the menu if present
+                if (icon->_menu) {
+                    icon->_menu->SetHWND(icon->_windowHandle);
+                    MenuItem* mi = icon->_menu->Show();
+                    if (mi) {
+                        icon->_callback(icon, NotifyIconMessage::Command, mi->Command);
+                    }
+                }
+
                 break;
 			case WM_LBUTTONDBLCLK:
-				icon->_callback(icon, NotifyIconMessage::DoubleClick);
+				icon->_callback(icon, NotifyIconMessage::DoubleClick, NULL);
 				break;
 			case WM_RBUTTONDBLCLK:
-				icon->_callback(icon, NotifyIconMessage::DoubleRClick);
+				icon->_callback(icon, NotifyIconMessage::DoubleRClick, NULL);
 				break;
         }
 
