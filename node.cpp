@@ -96,7 +96,7 @@ namespace Node {
                 if (submenuObj->IsArray()) {
                     Menu* submenu = RecursiveBuildMenu(Handle<Array>::Cast(submenuObj));
                     if (submenu)
-                        item->ChildMenu = submenu;
+                        item->ChildMenu = std::shared_ptr<Menu>(submenu);
                     else
                         return NULL;
                 } else {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <Windows.h>
 
 namespace JsNotifyIcon {
@@ -29,11 +30,19 @@ namespace JsNotifyIcon {
 
     // Item of a menu
     struct MenuItem {
+        MenuItem() :
+            Separator(false),
+            Command(NULL),
+            Text(NULL),
+            ChildMenu(NULL)
+        {
+        }
+
         unsigned int ID;
         bool Separator;
         char* Command;
         char* Text;
-        Menu* ChildMenu;
+        std::shared_ptr<Menu> ChildMenu;
     };
 
 }
