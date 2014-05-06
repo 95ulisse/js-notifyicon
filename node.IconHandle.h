@@ -2,7 +2,6 @@
 
 #include <node.h>
 #include <v8.h>
-#include "IconHandle.h"
 
 namespace JsNotifyIcon {
 namespace Node {
@@ -17,10 +16,10 @@ namespace Node {
 
             IconHandle();
             ~IconHandle();
-            JsNotifyIcon::IconHandle* GetIconHandle();
+            HICON GetIconHandle();
 
         private:
-            JsNotifyIcon::IconHandle* _iconHandle;
+            HICON _iconHandle;
             void SetIconHandle(HICON iconHandle);
 
             static Handle<Value> New(const Arguments& args);

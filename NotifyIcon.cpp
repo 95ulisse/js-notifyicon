@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include "IconHandle.h"
 #include "NotifyIcon.h"
 
 namespace JsNotifyIcon {
@@ -55,6 +54,9 @@ namespace JsNotifyIcon {
         if (this->IsVisible())
             this->Hide();
 
+        if (this->_icon)
+            DestroyIcon(this->_icon);
+
         DestroyWindow(this->_windowHandle);
     }
 
@@ -93,11 +95,11 @@ namespace JsNotifyIcon {
     }
 
     // Sets the icon
-    void NotifyIcon::SetIcon(IconHandle* icon)
+    void NotifyIcon::SetIcon(HICON icon)
     {
-        this->_icon = std::shared_ptr<IconHandle>(icon);
+        this->_icon = icon;
         this->_iconData->uFlags |= NIF_ICON;
-        this->_iconData->hIcon = icon->Handle();
+        this->_iconData->hIcon = icon;
         this->UpdateIcon();
     }
 

@@ -48,7 +48,7 @@ namespace Node {
         HandleScope scope;
 
         IconHandle* obj = ObjectWrap::Unwrap<IconHandle>(args.This());
-        delete obj->_iconHandle;
+        DestroyIcon(obj->GetIconHandle());
 
         return scope.Close(Undefined());
     }
@@ -60,10 +60,10 @@ namespace Node {
     }
 
     void IconHandle::SetIconHandle(HICON icon) {
-        this->_iconHandle = new JsNotifyIcon::IconHandle(icon);
+        this->_iconHandle = icon;
     }
 
-    JsNotifyIcon::IconHandle* IconHandle::GetIconHandle() {
+    HICON IconHandle::GetIconHandle() {
         return this->_iconHandle;
     }
 

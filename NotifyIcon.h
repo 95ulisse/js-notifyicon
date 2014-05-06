@@ -3,7 +3,6 @@
 #include <memory>
 #include <Windows.h>
 #include <shellapi.h>
-#include "IconHandle.h"
 #include "Menu.h"
 
 // Constants
@@ -34,7 +33,7 @@ namespace JsNotifyIcon {
 
             int ID;
 
-            void SetIcon(IconHandle* icon);
+            void SetIcon(HICON icon);
             void SetTooltip(const char* text);
             void SetMenu(Menu* menu);
             void SetCallback(NotifyIconCallback cb);
@@ -50,7 +49,7 @@ namespace JsNotifyIcon {
         private:
             HWND _windowHandle;
             std::shared_ptr<Menu> _menu;
-            std::shared_ptr<IconHandle> _icon;
+            HICON _icon;
             std::shared_ptr<NOTIFYICONDATA> _iconData;
             bool _isVisible;
             NotifyIconCallback _callback;

@@ -3,7 +3,6 @@
     {
       "target_name": "NotifyIcon",
       "sources": [
-        "IconHandle.cpp",
         "Menu.cpp",
         "NotifyIcon.cpp",
         "ThreadBridge.cpp",

@@ -57,7 +57,7 @@ namespace JsNotifyIcon {
         return id;
     }
 
-    void ThreadBridge::SetIcon(int id, IconHandle* icon)
+    void ThreadBridge::SetIcon(int id, HICON icon)
     {
         PostThreadMessage((DWORD)ThreadBridge::_threadId, TB_MESSAGE_SETICON, id, (LPARAM)icon);
     }
@@ -124,7 +124,7 @@ namespace JsNotifyIcon {
                     continue;
         
                 case TB_MESSAGE_SETICON:
-                    iconMap[(int)msg.wParam]->SetIcon((IconHandle*)msg.lParam);
+                    iconMap[(int)msg.wParam]->SetIcon((HICON)msg.lParam);
                     continue;
         
                 case TB_MESSAGE_SETTOOLTIP:

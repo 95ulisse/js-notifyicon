@@ -26,7 +26,7 @@ namespace JsNotifyIcon {
 
             static void SetCallback(ThreadBridgeCallback func);
             static int CreateNotifyIcon();
-            static void SetIcon(int id, IconHandle* icon);
+            static void SetIcon(int id, HICON icon);
             static void SetTooltip(int id, const char* text);
             static void SetMenu(int id, Menu* menu);
             static void Show(int id);
