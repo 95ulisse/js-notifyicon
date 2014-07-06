@@ -72,7 +72,7 @@ ni.showMessage('Title', 'Look ma, a notification!', 'info-big');
 * `warning-big`
 * `error-big`
 
-** Note that if the icon is not visible, it will be shown automatically when you call `showMessage`.**
+**Note that if the icon is not visible, it will be shown automatically when you call `showMessage`.**
 
 
 
